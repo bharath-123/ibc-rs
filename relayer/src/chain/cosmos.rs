@@ -28,6 +28,8 @@ use tendermint_rpc::{
 };
 use tokio::runtime::Runtime as TokioRuntime;
 use tonic::codegen::http::Uri;
+use tonic::metadata::MetadataValue;
+use tonic::IntoRequest;
 use tracing::{debug, error, info, span, trace, warn, Level};
 
 use ibc::clients::ics07_tendermint::client_state::{AllowUpdate, ClientState};
@@ -259,8 +261,12 @@ impl CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request =
+        let mut request =
             tonic::Request::new(ibc_proto::cosmos::staking::v1beta1::QueryParamsRequest {});
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.params(request))
@@ -672,7 +678,12 @@ impl CosmosSdkChain {
             .block_on(ServiceClient::connect(self.grpc_addr.clone()))
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(req);
+        let mut request = tonic::Request::new(req);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
+
         let response = self
             .block_on(client.simulate(request))
             .map_err(Error::grpc_status)?
@@ -1251,7 +1262,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
         let response = self
             .block_on(client.client_states(request))
             .map_err(Error::grpc_status)?
@@ -1342,7 +1357,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
         let response = self
             .block_on(client.consensus_states(request))
             .map_err(Error::grpc_status)?
@@ -1388,7 +1407,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = match self.block_on(client.client_connections(request)) {
             Ok(res) => res.into_inner(),
@@ -1423,7 +1446,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.connections(request))
@@ -1456,7 +1483,6 @@ impl ChainEndpoint for CosmosSdkChain {
             height: ICSHeight,
         ) -> Result<ConnectionEnd, Error> {
             use ibc_proto::ibc::core::connection::v1 as connection;
-            use tonic::{metadata::MetadataValue, IntoRequest};
 
             let mut client =
                 connection::query_client::QueryClient::connect(chain.grpc_addr.clone())
@@ -1470,10 +1496,13 @@ impl ChainEndpoint for CosmosSdkChain {
 
             let height_param = MetadataValue::from_str(&height.revision_height.to_string())
                 .map_err(Error::invalid_metadata)?;
+            let auth_param = MetadataValue::from_str("Auth-key")
+                .map_err(Error::invalid_metadata)?;
 
             request
                 .metadata_mut()
                 .insert("x-cosmos-block-height", height_param);
+            request.metadata_mut().insert("authorization", auth_param);
 
             let response = client.connection(request).await.map_err(|e| {
                 if e.code() == tonic::Code::NotFound {
@@ -1517,7 +1546,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.connection_channels(request))
@@ -1550,7 +1583,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.channels(request))
@@ -1595,7 +1632,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.channel_client_state(request))
@@ -1625,7 +1666,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.packet_commitments(request))
@@ -1659,7 +1704,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let mut response = self
             .block_on(client.unreceived_packets(request))
@@ -1686,7 +1735,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.packet_acknowledgements(request))
@@ -1719,7 +1772,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let mut response = self
             .block_on(client.unreceived_acks(request))
@@ -1745,7 +1802,11 @@ impl ChainEndpoint for CosmosSdkChain {
             )
             .map_err(Error::grpc_transport)?;
 
-        let request = tonic::Request::new(request);
+        let mut request = tonic::Request::new(request);
+        request.metadata_mut().insert(
+            "authorization",
+            MetadataValue::from_str("Auth-key").unwrap(),
+        );
 
         let response = self
             .block_on(client.next_sequence_receive(request))
@@ -2462,7 +2523,11 @@ async fn fetch_version_specs(
             )
         })?;
 
-    let request = tonic::Request::new(GetNodeInfoRequest {});
+    let mut request = tonic::Request::new(GetNodeInfoRequest {});
+    request.metadata_mut().insert(
+        "authorization",
+        MetadataValue::from_str("Auth-Header").unwrap(),
+    );
 
     let response = client.get_node_info(request).await.map_err(|e| {
         Error::fetch_version_grpc_status(
