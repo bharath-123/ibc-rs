@@ -267,7 +267,7 @@ impl CosmosSdkChain {
             tonic::Request::new(ibc_proto::cosmos::staking::v1beta1::QueryParamsRequest {});
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -695,7 +695,7 @@ impl CosmosSdkChain {
         let mut request = tonic::Request::new(req);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1279,7 +1279,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
         let response = self
             .block_on(client.client_states(request))
@@ -1374,7 +1374,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
         let response = self
             .block_on(client.consensus_states(request))
@@ -1424,7 +1424,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = match self.block_on(client.client_connections(request)) {
@@ -1463,7 +1463,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1510,13 +1510,13 @@ impl ChainEndpoint for CosmosSdkChain {
 
             let height_param = MetadataValue::from_str(&height.revision_height.to_string())
                 .map_err(Error::invalid_metadata)?;
-            let auth_param = MetadataValue::from_str("b6f4e191cd51b5800a97fdf909146ed8")
+            let auth_param = MetadataValue::from_str("Auth-key")
                 .map_err(Error::invalid_metadata)?;
 
             request
                 .metadata_mut()
                 .insert("x-cosmos-block-height", height_param);
-            request.metadata_mut().insert("Auth-Header", auth_param);
+            request.metadata_mut().insert("authorization", auth_param);
 
             let response = client.connection(request).await.map_err(|e| {
                 if e.code() == tonic::Code::NotFound {
@@ -1563,7 +1563,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1600,7 +1600,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1653,7 +1653,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1687,7 +1687,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1725,7 +1725,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let mut response = self
@@ -1756,7 +1756,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
@@ -1793,7 +1793,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let mut response = self
@@ -1823,7 +1823,7 @@ impl ChainEndpoint for CosmosSdkChain {
         let mut request = tonic::Request::new(request);
         request.metadata_mut().insert(
             "authorization",
-            MetadataValue::from_str("Auth-Header").unwrap(),
+            MetadataValue::from_str("Auth-key").unwrap(),
         );
 
         let response = self
